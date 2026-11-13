@@ -25,4 +25,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with: { name: Quest-Chrono-3S-APK, path: release-apk/Quest-Chrono-3S.apk }
       - uses: softprops/action-gh-release@v2
-        with: { tag_name: v1.0.0, name: Quest Chrono 3S APK, files: release-apk/Quest-Chrono-3S.apk }
+        with:
+          tag_name: v2.0.0
+          name: Quest Chrono 3S v2.0.0 (Circular Clock Overhaul)
+          files: release-apk/Quest-Chrono-3S.apk

@@ -1,9 +1,61 @@
 ﻿<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/><title>Quest Chrono</title><link rel="stylesheet" href="styles.css"/></head><body>
-<div id="alarm-banner" class="alarm-banner hidden"><span id="alarm-banner-text">TIME UP</span><button id="dismiss-alert-btn" class="btn btn-danger">DISMISS</button></div>
-<header class="top-bar"><h1>QUEST CHRONO</h1><div class="top-controls"><button id="toggle-24h" class="chip-btn">24H</button><button id="toggle-seconds" class="chip-btn active">SEC</button><button id="toggle-ambient" class="chip-btn">AMBIENT</button><button id="test-sound-btn" class="chip-btn">CHIME</button></div></header>
-<main class="dashboard">
-<section class="card clock-card"><div class="row-between"><span class="label">LIVE CLOCK</span><span id="live-date" class="muted"></span></div><div class="clock-display"><span id="live-time">00:00:00</span><span id="live-ampm" class="ampm hidden">AM</span></div><div class="world-strip"><div class="pill"><span>LOCAL</span><b id="tz-local">--:--</b></div><div class="pill"><span>NEW YORK</span><b id="tz-ny">--:--</b></div><div class="pill"><span>TOKYO</span><b id="tz-tokyo">--:--</b></div><div class="pill"><span>UTC</span><b id="tz-utc">--:--</b></div></div></section>
-<section class="card timers-card"><div class="row-between"><span class="label">TIMERS</span><div class="row"><button class="preset-btn" data-sec="60">+1m</button><button class="preset-btn" data-sec="300">+5m</button><button class="preset-btn" data-sec="1500">25m</button><button class="preset-btn" data-sec="2700">VR 45m</button></div></div><form id="custom-timer-form" class="row"><input id="timer-label-input" type="text" placeholder="Label"/><input id="timer-min-input" type="number" min="0" max="999" value="5"/><span class="muted">m</span><input id="timer-sec-input" type="number" min="0" max="59" value="0"/><span class="muted">s</span><button type="submit" class="btn btn-primary">+ ADD</button></form><div id="timers-list" class="list"></div></section>
-<section class="card alarms-card"><div class="row-between"><span class="label">ALARMS</span></div><form id="alarm-form" class="row"><input id="alarm-time-input" type="time" required value="08:00"/><input id="alarm-label-input" type="text" placeholder="Alarm label"/><button type="submit" class="btn btn-primary">+ SET</button></form><div id="alarms-list" class="list"></div></section>
-<section class="card sw-card"><div class="row-between"><span class="label">STOPWATCH</span><div class="row"><button id="sw-start-btn" class="btn btn-primary">START</button><button id="sw-lap-btn" class="btn btn-secondary" disabled>LAP</button><button id="sw-reset-btn" class="btn btn-secondary">RESET</button></div></div><div id="sw-display" class="sw-display">00:00.00</div><div id="sw-laps" class="row"></div></section>
+<div id="alarm-banner" class="alarm-banner hidden"><div class="banner-left"><span class="pulse-dot"></span><span id="alarm-banner-text">TIME UP</span></div><button id="dismiss-alert-btn" class="btn btn-danger">DISMISS</button></div>
+<header class="topbar">
+  <div class="brand"><div class="logo-ring"></div><div><h1>QUEST CHRONO</h1><span class="sub">SPATIAL TIME HUB</span></div></div>
+  <nav class="nav-pills" id="view-tabs">
+    <button class="tab-btn active" data-view="all">Overview</button>
+    <button class="tab-btn" data-view="clock">Clock</button>
+    <button class="tab-btn" data-view="timers">Timers</button>
+    <button class="tab-btn" data-view="alarms">Alarms</button>
+    <button class="tab-btn" data-view="stopwatch">Stopwatch</button>
+  </nav>
+  <div class="controls">
+    <button id="toggle-24h" class="chip">24H</button>
+    <button id="toggle-seconds" class="chip active">SEC</button>
+    <button id="tone-btn" class="chip">TONE: HORIZON</button>
+    <button id="test-sound-btn" class="chip">TEST</button>
+  </div>
+</header>
+<main class="grid" id="main-grid">
+  <section class="panel clock-panel" data-section="clock">
+    <div class="clock-layout">
+      <div class="analog-wrap">
+        <svg id="analog-clock" viewBox="0 0 260 260" class="analog-svg">
+          <defs><radialGradient id="dialGrad" cx="50%" cy="45%" r="55%"><stop offset="0%" stop-color="#131c31"/><stop offset="100%" stop-color="#080c16"/></radialGradient></defs>
+          <circle cx="130" cy="130" r="122" fill="url(#dialGrad)" stroke="#1e293b" stroke-width="3"/>
+          <circle cx="130" cy="130" r="114" fill="none" stroke="rgba(56,189,248,0.16)" stroke-width="1"/>
+          <g id="clock-ticks"></g>
+          <line id="hand-hour" x1="130" y1="130" x2="130" y2="68" stroke="#f8fafc" stroke-width="6" stroke-linecap="round"/>
+          <line id="hand-min" x1="130" y1="130" x2="130" y2="42" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+          <line id="hand-sec" x1="130" y1="146" x2="130" y2="32" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="130" cy="130" r="6" fill="#38bdf8"/>
+          <circle cx="130" cy="130" r="2.5" fill="#07090f"/>
+        </svg>
+      </div>
+      <div class="digital-wrap">
+        <span class="kicker">LIVE LOCAL TIME</span>
+        <div class="digital-row"><span id="live-time">00:00:00</span><span id="live-ampm" class="ampm hidden">AM</span></div>
+        <div id="live-date" class="date-text">Friday, 13 Nov 2026</div>
+        <div class="world-grid">
+          <div class="w-card"><span>NEW YORK</span><b id="tz-ny">--:--</b></div>
+          <div class="w-card"><span>TOKYO</span><b id="tz-tokyo">--:--</b></div>
+          <div class="w-card"><span>UTC</span><b id="tz-utc">--:--</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="panel timers-panel" data-section="timers">
+    <div class="panel-head"><span class="kicker">COUNTDOWN TIMERS</span><div class="presets"><button class="preset" data-sec="60">1m</button><button class="preset" data-sec="300">5m</button><button class="preset" data-sec="600">10m</button><button class="preset" data-sec="1500">25m Focus</button><button class="preset" data-sec="2700">45m VR</button></div></div>
+    <form id="custom-timer-form" class="form-row"><input id="timer-label-input" type="text" placeholder="Timer label..." maxlength="24"/><div class="num-group"><input id="timer-min-input" type="number" min="0" max="999" value="5"/><span>m</span><input id="timer-sec-input" type="number" min="0" max="59" value="0"/><span>s</span></div><button type="submit" class="btn btn-primary">+ Start</button></form>
+    <div id="timers-list" class="stack"></div>
+  </section>
+  <section class="panel alarms-panel" data-section="alarms">
+    <div class="panel-head"><span class="kicker">ALARMS</span><span class="muted">Saved automatically</span></div>
+    <form id="alarm-form" class="form-row"><input id="alarm-time-input" type="time" required value="08:00"/><input id="alarm-label-input" type="text" placeholder="Alarm note..." maxlength="24"/><button type="submit" class="btn btn-primary">+ Set</button></form>
+    <div id="alarms-list" class="stack"></div>
+  </section>
+  <section class="panel sw-panel" data-section="stopwatch">
+    <div class="panel-head"><span class="kicker">STOPWATCH</span><div class="btn-group"><button id="sw-start-btn" class="btn btn-primary">Start</button><button id="sw-lap-btn" class="btn btn-ghost" disabled>Lap</button><button id="sw-reset-btn" class="btn btn-ghost">Reset</button></div></div>
+    <div class="sw-row"><div id="sw-display" class="sw-time">00:00.00</div><div id="sw-laps" class="laps-wrap"></div></div>
+  </section>
 </main><script src="app.js"></script></body></html>
